@@ -10,7 +10,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | Module | Status |
 |---|---|
 | `contract.health` | ✅ `/health`, `/version`, `/icon`, `/shutdown` |
-| `contract.cli` | ⏳ argparse scaffold (`--headless`, `--prefix`, …) |
+| `contract.cli` | ✅ argparse scaffold + env propagation |
 | `contract.data_paths` | ⏳ `CONTER_DATA_DIR` resolver |
 | `version` | ⏳ bundled-version + pyproject reader |
 | `auth` | ⏳ users, roles, login/logout |
@@ -55,6 +55,35 @@ The returned blueprint is named `health`, so endpoints are:
 
 Apps that expose an auth gate should list these four names in their
 `PUBLIC_ENDPOINTS` set so the supervisor can poll them without a session.
+
+## Usage — CLI scaffold
+
+```python
+from conter_app_base.contract import (
+    build_parser, handle_preboot_flags, apply_contract_env,
+)
+
+parser = build_parser(description="My App — Web & Desktop")
+parser.add_argument("--desktop", action="store_true")   # app-specific
+args = parser.parse_args()
+
+handle_preboot_flags(            # exits 0 for --version / --info
+    args,
+    get_version=get_version,
+    app_name=APP_NAME,
+    display_name=APP_DISPLAY_NAME,
+    description=APP_DESCRIPTION,
+    contract_version=CONTRACT_VERSION,
+)
+
+apply_contract_env(args)         # sets CONTER_* env from args
+from app import create_app
+app = create_app()               # safe: env is primed before import
+```
+
+`build_parser()` ships every contract flag (`--headless`, `--host`,
+`--port`, `--log-level`, `--data-dir`, `--shutdown-token`, `--prefix`,
+`--info`, `--version`) so apps only declare what's domain-specific.
 
 ## Tests
 
