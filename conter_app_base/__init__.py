@@ -12,7 +12,7 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
 - [x] contract.data_paths — CONTER_DATA_DIR resolver
 - [x] version            — bundled-version-file + pyproject reader + uptime
 - [x] auth               — UserStore class (SQLite + roles + bootstrap admin)
-- [ ] wiki               — articles, seed hook, markdown rendering
+- [x] wiki               — WikiStore (tree + locales + uploads) + markdown renderer
 - [ ] settings           — pluggable sections UI
 - [ ] design             — base.html + sidebar API + style.css + modals
 - [ ] i18n               — Babel wiring + merged catalog

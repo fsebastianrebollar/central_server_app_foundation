@@ -14,7 +14,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `contract.data_paths` | ✅ `CONTER_DATA_DIR` resolver |
 | `version` | ✅ bundled-version + pyproject reader + uptime |
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
-| `wiki` | ⏳ articles + markdown rendering |
+| `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
 | `settings` | ⏳ pluggable sections UI |
 | `design` | ⏳ base.html + sidebar API + style.css |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
@@ -84,6 +84,37 @@ app = create_app()               # safe: env is primed before import
 `build_parser()` ships every contract flag (`--headless`, `--host`,
 `--port`, `--log-level`, `--data-dir`, `--shutdown-token`, `--prefix`,
 `--info`, `--version`) so apps only declare what's domain-specific.
+
+## Usage — wiki
+
+```python
+from conter_app_base.wiki import WikiStore, render_markdown
+
+_store = WikiStore(
+    db_path=lambda: _DB_PATH,            # late binding for tests
+    uploads_dir=lambda: UPLOADS_DIR,
+    locale_resolver=_current_locale,     # returns "en" | "es" | "de"
+    gettext=flask_babel.gettext,         # optional, identity default
+)
+
+init_wiki_db   = _store.init_schema
+list_tree      = _store.list_tree
+get_page       = _store.get_page
+create_page    = _store.create_page
+save_upload    = _store.save_upload
+# ... etc.
+
+def seed_initial_content():
+    # Wiki content is per-app — the library only owns the machinery.
+    from app.services.wiki_seed_content import ARTICLES
+    return _store.seed(ARTICLES)
+```
+
+`render_markdown(text, url_prefix=...)` is a pure function: pass
+`url_prefix=APPLICATION_ROOT` when the app runs behind the
+central-server reverse proxy (contract v1.3) so hardcoded
+`/api/wiki/uploads/...` image URLs in seed content survive the
+prefix rewrite.
 
 ## Tests
 
