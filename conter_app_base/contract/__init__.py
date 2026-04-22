@@ -12,6 +12,10 @@ from conter_app_base.contract.cli import (
     handle_preboot_flags,
     normalize_prefix,
 )
+from conter_app_base.contract.data_paths import (
+    get_data_dir,
+    override_path,
+)
 from conter_app_base.contract.health import create_health_blueprint
 
 __all__ = [
@@ -21,4 +25,6 @@ __all__ = [
     "apply_contract_env",
     "normalize_prefix",
     "VALID_LOG_LEVELS",
+    "get_data_dir",
+    "override_path",
 ]
