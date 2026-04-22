@@ -16,8 +16,9 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
 | `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
 | `settings` | ✅ `SettingsStore` (two-scope SQLite key/value + JSON helpers) |
-| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar + settings shell (8a+8b+8c done; auth templates pending as 8d) |
+| `design` | ✅ chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar + settings shell + auth templates (8a+8b+8c+8d) |
 | `settings_ui` | ✅ `SettingsShell` section registry + `/settings` section partial + shared `.settings-*` CSS |
+| `auth_ui` | ✅ `create_auth_blueprint` factory + `login.html` + `user.html` + `_user_body`/`_user_scripts` partials |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
 
 See `MONOREPO_PLAN.md` at the repo root for the full extraction plan.
@@ -287,6 +288,86 @@ once, not per-page.
 Section gating follows the sidebar convention: admins implicitly pass
 supervisor-only gates, and if a role resolver raises, the section is
 hidden (safer than leaking admin entries on a bug).
+
+## Usage — auth blueprint + templates
+
+```python
+from conter_app_base.auth_ui import create_auth_blueprint
+from conter_app_base.auth import UserStore
+
+_store = UserStore(
+    db_path=lambda: _AUTH_DB_PATH,
+    admin_user="admin",
+    admin_pass="changeme",
+)
+
+def _on_login(user, session):
+    # Hydrate whatever session state the app cares about beyond identity
+    # (theme, locale, workspace defaults, …). Runs AFTER user_id / is_admin
+    # / role / is_guest are set by the library.
+    session["theme"] = _get_pref(user["username"], "theme", "")
+
+auth_bp = create_auth_blueprint(
+    user_store=_store,
+    post_login_endpoint="main.dashboard",      # where to go after login
+    gettext=flask_babel.gettext,               # optional
+    supported_languages=("en", "es", "de"),
+    allow_guest=True,                          # /login/guest on by default
+    get_user_pref=_get_pref,
+    set_user_pref=_set_pref,
+    on_login_hook=_on_login,
+    login_brand_short="CS",                    # shown in login.html
+    login_brand_full="Conter Stats",
+    login_stylesheet_urls=(("static", "css/style.css"),),
+    login_favicon_url=("static", "img/favicon.ico"),
+    user_template="user.html",                 # override to keep app chrome
+    protected_user="admin",                    # hides delete/role buttons
+)
+app.register_blueprint(auth_bp)
+```
+
+The blueprint is always named `auth`, so `url_for("auth.login")` /
+`url_for("auth.user_profile")` / `url_for("auth.set_theme")` /
+`url_for("auth.set_language")` call sites keep working.
+
+Endpoints mounted:
+
+- `GET|POST /login`, `GET /login/guest`, `POST /logout`
+- `GET /user`, `POST /change-password`
+- `POST /admin/users/create`, `POST /admin/users/<u>/delete`,
+  `POST /admin/users/<u>/role`, `POST /admin/users/<u>/change-password`
+- `POST /api/user/change-password`, plus JSON variants of every admin
+  form action above under `/api/admin/users/…`
+- `POST /api/theme`, `GET /lang/<lang>`
+
+Login chrome URLs can be either a plain string (used as-is) or a
+`(endpoint, filename)` tuple — tuples resolve through `url_for` at
+request time, so `APPLICATION_ROOT` prefixing (v1.3 reverse-proxy
+deployments) works transparently.
+
+### Template shape
+
+`login.html` is a standalone page owned by the library; apps only
+configure its chrome via the blueprint factory. `user.html` extends
+`conter_app_base/design/base.html` and is drop-in for apps that don't
+need custom header widgets. Apps that do (product picker, workspace
+widget, etc.) keep their own `user.html` template and `{% include %}`
+the library's body + scripts partials:
+
+```jinja
+{% extends "base.html" %}
+{% block content %}
+{% include "conter_app_base/auth/_user_body.html" %}
+{% endblock %}
+{% block scripts %}
+{% include "conter_app_base/auth/_user_scripts.html" %}
+{% endblock %}
+```
+
+The user body partial reads `is_admin`, `is_guest` and `auth_protected_user`
+from the template context — apps already providing the first two through
+a global `context_processor` don't need to do anything extra; the third
+is injected by the auth blueprint.
 
 ## Usage — pill toolbar
 

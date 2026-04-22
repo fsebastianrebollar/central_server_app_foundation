@@ -76,6 +76,11 @@ class UserStore:
         self._valid_roles = tuple(valid_roles)
         self._ = gettext
 
+    @property
+    def valid_roles(self) -> tuple[str, ...]:
+        """Public read-only view of the role taxonomy (used by templates)."""
+        return self._valid_roles
+
     # ---- connection + schema --------------------------------------------
 
     def _connect(self) -> sqlite3.Connection:

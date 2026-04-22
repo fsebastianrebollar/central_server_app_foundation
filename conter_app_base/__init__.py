@@ -14,12 +14,13 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
 - [x] auth               — UserStore class (SQLite + roles + bootstrap admin)
 - [x] wiki               — WikiStore (tree + locales + uploads) + markdown renderer
 - [x] settings           — SettingsStore (two-scope SQLite key/value + JSON helpers)
-- [~] design             — chassis base.html + Sidebar API + chassis.js
+- [x] design             — chassis base.html + Sidebar API + chassis.js
                           + floating pill toolbar + settings-shell section
-                          registration (8a+8b+8c landed; auth templates
-                          pending as 8d)
+                          registration (8a+8b+8c+8d)
 - [x] settings_ui        — SettingsShell / SettingsSection / SettingsButton
                           + /settings section partial + shared settings.css
+- [x] auth_ui            — create_auth_blueprint + login.html + user.html
+                          + _user_body/_user_scripts partials (8d)
 - [ ] i18n               — Babel wiring + merged catalog
 
 Incrementally extracted from conter-stats; each extraction should ship
