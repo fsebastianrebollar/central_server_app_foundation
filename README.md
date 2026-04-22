@@ -12,7 +12,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `contract.health` | ✅ `/health`, `/version`, `/icon`, `/shutdown` |
 | `contract.cli` | ✅ argparse scaffold + env propagation |
 | `contract.data_paths` | ✅ `CONTER_DATA_DIR` resolver |
-| `version` | ⏳ bundled-version + pyproject reader |
+| `version` | ✅ bundled-version + pyproject reader + uptime |
 | `auth` | ⏳ users, roles, login/logout |
 | `wiki` | ⏳ articles + markdown rendering |
 | `settings` | ⏳ pluggable sections UI |
