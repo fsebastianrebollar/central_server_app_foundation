@@ -21,7 +21,8 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
                           + /settings section partial + shared settings.css
 - [x] auth_ui            — create_auth_blueprint + login.html + user.html
                           + _user_body/_user_scripts partials (8d)
-- [ ] i18n               — Babel wiring + merged catalog
+- [x] i18n               — init_babel + make_locale_resolver + bundled
+                          es/de catalogs for chassis strings (9)
 
 Incrementally extracted from conter-stats; each extraction should ship
 as a standalone commit so the history shows how the chassis grows.

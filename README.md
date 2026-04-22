@@ -19,7 +19,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `design` | ✅ chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar + settings shell + auth templates (8a+8b+8c+8d) |
 | `settings_ui` | ✅ `SettingsShell` section registry + `/settings` section partial + shared `.settings-*` CSS |
 | `auth_ui` | ✅ `create_auth_blueprint` factory + `login.html` + `user.html` + `_user_body`/`_user_scripts` partials |
-| `i18n` | ⏳ Babel wiring + merged catalogs |
+| `i18n` | ✅ `init_babel` + `make_locale_resolver` + bundled es/de catalogs for chassis strings |
 
 See `MONOREPO_PLAN.md` at the repo root for the full extraction plan.
 
@@ -420,6 +420,48 @@ Theming pulls from the chassis CSS variables (`--bg-surface`,
 `--border`, `--text`, `--text-secondary`, `--neon`, `--neon-subtle`),
 so any app that already consumes the design chassis gets the right
 look without extra work.
+
+## Usage — i18n
+
+```python
+from conter_app_base.i18n import init_babel, make_locale_resolver
+
+SUPPORTED_LANGS = ("en", "es", "de")
+
+get_locale = make_locale_resolver(
+    supported_languages=SUPPORTED_LANGS, default_language="en",
+)
+
+init_babel(
+    app,
+    supported_languages=SUPPORTED_LANGS,
+    default_language="en",
+    translation_dirs=("translations",),  # app's own catalogs
+    locale_selector=get_locale,
+)
+```
+
+The library prepends its own `translations/` directory to the Flask-Babel
+search path, so a string like `"User Profile"` resolves against the
+bundled chassis catalog (es/de provided) when the app hasn't
+re-translated it. Apps only need to translate their domain strings.
+
+`make_locale_resolver()` returns a function safe to call outside a
+request context (returns the default language), which keeps service-layer
+code wrapping error messages with `gettext()` safe in background jobs.
+
+### Adding strings to the library catalog
+
+From `packages/app-base/`:
+
+```bash
+pybabel extract -F conter_app_base/i18n/babel.cfg \
+    -o conter_app_base/i18n/translations/messages.pot conter_app_base
+pybabel update -i conter_app_base/i18n/translations/messages.pot \
+    -d conter_app_base/i18n/translations
+# edit es/de .po files, then:
+pybabel compile -d conter_app_base/i18n/translations
+```
 
 ## Tests
 

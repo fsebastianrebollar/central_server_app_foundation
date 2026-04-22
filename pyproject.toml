@@ -10,6 +10,7 @@ requires-python = ">=3.11"
 dependencies = [
     "flask>=3.0",
     "werkzeug>=3.0",
+    "flask-babel>=4.0",
 ]
 
 [project.optional-dependencies]
@@ -27,4 +28,8 @@ conter_app_base = [
     "settings_ui/templates/**/*.html",
     "settings_ui/static/*.css",
     "auth_ui/templates/**/*.html",
+    "i18n/translations/**/*.mo",
+    "i18n/translations/**/*.po",
+    "i18n/translations/*.pot",
+    "i18n/babel.cfg",
 ]
