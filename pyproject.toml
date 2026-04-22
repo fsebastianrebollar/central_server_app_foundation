@@ -24,4 +24,6 @@ conter_app_base = [
     "design/templates/**/*.html",
     "design/static/*.js",
     "design/static/*.css",
+    "settings_ui/templates/**/*.html",
+    "settings_ui/static/*.css",
 ]

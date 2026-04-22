@@ -16,7 +16,8 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
 | `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
 | `settings` | ✅ `SettingsStore` (two-scope SQLite key/value + JSON helpers) |
-| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar (8a+8b done; settings shell + auth templates pending as 8c–8d) |
+| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar + settings shell (8a+8b+8c done; auth templates pending as 8d) |
+| `settings_ui` | ✅ `SettingsShell` section registry + `/settings` section partial + shared `.settings-*` CSS |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
 
 See `MONOREPO_PLAN.md` at the repo root for the full extraction plan.
@@ -228,6 +229,64 @@ The `Sidebar.entry()` API supports:
 - `active_when=fn(endpoint, request) -> bool` — custom predicate for
   cases the endpoint set can't express (e.g. "Dashboard tab active
   when the steps page was reached *from* the dashboard").
+
+## Usage — settings shell
+
+```python
+from conter_app_base.settings_ui import (
+    SettingsShell, SettingsButton, create_settings_blueprint,
+)
+
+shell = SettingsShell()
+shell.section(
+    "cache",
+    title="Cache & Service",
+    description="Inspect / clear caches, restart the service.",
+    buttons=[
+        SettingsButton(label="Cache Manager", icon="&#128190;",
+                       onclick="openCacheModal()"),
+        SettingsButton(label="Service Control", icon="&#9881;",
+                       onclick="openServiceModal()"),
+    ],
+    admin_only=True,     # default; admin-only sections hidden otherwise
+)
+shell.section(
+    "docs",
+    title="Docs",
+    buttons=[SettingsButton(label="Wiki", href="/wiki")],
+    admin_only=False,
+)
+
+app.register_blueprint(create_settings_blueprint(
+    shell=shell,
+    is_admin_resolver=lambda: session.get("is_admin"),          # default
+    is_supervisor_resolver=lambda: get_role(user_id) == "supervisor",
+))
+```
+
+The blueprint injects `chassis_settings_sections` (already filtered by
+role) into every template context, so the app's `settings.html`
+becomes:
+
+```jinja
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <h2>{{ _('Settings') }}</h2>
+    {% include "conter_app_base/settings/_sections.html" %}
+</section>
+{% endblock %}
+```
+
+Modals, JS handlers and the backing API endpoints stay in the app —
+the chassis only owns the section grid so the visual skeleton is
+consistent across apps. Shared button/grid styles ship as
+`/settings-static/settings.css`; load it from the app's `base.html`
+once, not per-page.
+
+Section gating follows the sidebar convention: admins implicitly pass
+supervisor-only gates, and if a role resolver raises, the section is
+hidden (safer than leaking admin entries on a bug).
 
 ## Usage — pill toolbar
 
