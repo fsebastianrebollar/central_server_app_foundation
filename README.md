@@ -16,7 +16,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
 | `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
 | `settings` | ✅ `SettingsStore` (two-scope SQLite key/value + JSON helpers) |
-| `design` | ⏳ base.html + sidebar API + style.css |
+| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js (8a done; pill toolbar, settings shell, auth templates pending as 8b–8d) |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
 
 See `MONOREPO_PLAN.md` at the repo root for the full extraction plan.
@@ -151,6 +151,83 @@ first (auth, wiki, settings) finds what it needs without caring about
 init order. `get_global_json` / `set_global_json` replace the
 `json.loads(get_global(k, "")) or default` boilerplate apps would
 otherwise repeat around every typed getter.
+
+## Usage — design chassis
+
+```python
+from conter_app_base.design import Sidebar, create_design_blueprint
+
+sb = Sidebar()
+sb.entry("Dashboard", endpoint="main.dashboard",
+         icon="&#9632;", hide_for_guests=True)
+sb.entry("Reports",   endpoint="main.reports", icon="&#9776;",
+         hide_for_guests=True,
+         active_endpoints={"main.reports", "main.reports_daily",
+                           "main.reports_monthly"})
+sb.entry("Search",    endpoint="main.index", icon="&#8981;")
+sb.entry("Settings",  endpoint="main.settings",
+         icon="&#9881;", admin_only=True)
+
+app.register_blueprint(create_design_blueprint(
+    sidebar=sb,
+    brand_short="CS",
+    brand_full="Conter Stats",
+    brand_endpoint="main.dashboard",
+    user_profile_endpoint="auth.user_profile",
+    logout_endpoint="auth.logout",
+    language_switch_endpoint="auth.set_language",
+    supported_languages=("en", "es", "de"),
+    theme_save_url="/api/theme",
+))
+```
+
+Then in the app's `base.html`:
+
+```jinja
+{% extends "conter_app_base/design/base.html" %}
+
+{% block header_extra_widgets %}
+    {# product picker, workspace widget, etc. #}
+{% endblock %}
+
+{% block pre_scripts %}
+    {# app-specific JS that must run before chassis.js #}
+{% endblock %}
+
+{% block scripts %}
+    {# app-specific JS that runs after chassis.js #}
+{% endblock %}
+```
+
+Available blocks:
+
+| Block | Purpose |
+|---|---|
+| `title` | page title (default: `chassis_brand.full`) |
+| `app_styles` | stylesheet(s) + favicon |
+| `head` | extra `<head>` tags (per-page metas, etc.) |
+| `header_extra_widgets` | widgets injected to the right of the brand |
+| `sidebar_bottom_extra` | extra items below the user pill in the sidebar |
+| `content` | main page content |
+| `modals_extra` | extra modal markup at the end of `<body>` |
+| `pre_scripts` | `<script>` tags loaded *before* chassis.js |
+| `scripts` | `<script>` tags loaded *after* chassis.js |
+
+`chassis.js` owns theme toggle, sidebar drawer (desktop persist /
+mobile overlay) and the global ESC handler. The theme POST target is
+read from `window.APP_THEME_SAVE_URL` (set by the template from
+`theme_save_url`), so apps with a non-default endpoint just pass it
+to `create_design_blueprint()`.
+
+The `Sidebar.entry()` API supports:
+
+- `icon=` — raw HTML/SVG/entity, rendered with `|safe`.
+- `admin_only=`, `supervisor_only=`, `hide_for_guests=` — role gates.
+- `active_endpoints=` — set of Flask endpoint names that highlight
+  this tab (default: `{endpoint}`).
+- `active_when=fn(endpoint, request) -> bool` — custom predicate for
+  cases the endpoint set can't express (e.g. "Dashboard tab active
+  when the steps page was reached *from* the dashboard").
 
 ## Tests
 

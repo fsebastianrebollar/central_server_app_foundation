@@ -18,3 +18,10 @@ test = ["pytest>=8"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["conter_app_base*"]
+
+[tool.setuptools.package-data]
+conter_app_base = [
+    "design/templates/**/*.html",
+    "design/static/*.js",
+    "design/static/*.css",
+]
