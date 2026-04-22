@@ -13,7 +13,7 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
 - [x] version            — bundled-version-file + pyproject reader + uptime
 - [x] auth               — UserStore class (SQLite + roles + bootstrap admin)
 - [x] wiki               — WikiStore (tree + locales + uploads) + markdown renderer
-- [ ] settings           — pluggable sections UI
+- [x] settings           — SettingsStore (two-scope SQLite key/value + JSON helpers)
 - [ ] design             — base.html + sidebar API + style.css + modals
 - [ ] i18n               — Babel wiring + merged catalog
 

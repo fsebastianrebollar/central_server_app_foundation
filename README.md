@@ -15,7 +15,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `version` | ✅ bundled-version + pyproject reader + uptime |
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
 | `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
-| `settings` | ⏳ pluggable sections UI |
+| `settings` | ✅ `SettingsStore` (two-scope SQLite key/value + JSON helpers) |
 | `design` | ⏳ base.html + sidebar API + style.css |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
 
@@ -115,6 +115,42 @@ def seed_initial_content():
 central-server reverse proxy (contract v1.3) so hardcoded
 `/api/wiki/uploads/...` image URLs in seed content survive the
 prefix rewrite.
+
+## Usage — settings
+
+```python
+from conter_app_base.settings import SettingsStore
+
+_store = SettingsStore(db_path=lambda: _DB_PATH)   # late binding for tests
+
+_connect       = _store._connect
+get_user_pref  = _store.get_user_pref
+set_user_pref  = _store.set_user_pref
+get_global     = _store.get_global
+set_global     = _store.set_global
+
+# App-specific domain helpers stay in the app — they are just thin JSON
+# wrappers on top of the store.
+def get_column_config(table: str) -> list[str]:
+    return _store.get_global_json(f"columns_{table}", DEFAULTS[table])
+
+def set_column_config(table: str, columns: list[str]) -> None:
+    _store.set_global_json(f"columns_{table}", columns)
+```
+
+Two scopes, one SQLite file:
+
+- **`global_settings`** — one value per key, shared across users.
+  Column defaults, chart defaults, DB connection, i18n preferences.
+- **`user_preferences`** — one value per (username, key), per-user
+  overrides. Theme, sidebar state, locale.
+
+Every connection runs `PRAGMA journal_mode=WAL` and auto-creates both
+tables (`CREATE TABLE IF NOT EXISTS`), so any subsystem reaching the DB
+first (auth, wiki, settings) finds what it needs without caring about
+init order. `get_global_json` / `set_global_json` replace the
+`json.loads(get_global(k, "")) or default` boilerplate apps would
+otherwise repeat around every typed getter.
 
 ## Tests
 
