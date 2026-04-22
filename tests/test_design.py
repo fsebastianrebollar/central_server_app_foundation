@@ -287,3 +287,18 @@ class TestBlueprintStatic:
         assert resp.status_code == 200
         assert b"theme" in resp.data.lower()
         assert b"sidebar" in resp.data.lower()
+
+    def test_pill_toolbar_js_is_served(self, app_with_design):
+        client = app_with_design.test_client()
+        resp = client.get("/design-static/pill-toolbar.js")
+        assert resp.status_code == 200
+        # Sanity-check it's the PillToolbar module, not a stray file.
+        assert b"PillToolbar" in resp.data
+        assert b"view-toolbar-btn" in resp.data
+
+    def test_pill_toolbar_css_is_served(self, app_with_design):
+        client = app_with_design.test_client()
+        resp = client.get("/design-static/pill-toolbar.css")
+        assert resp.status_code == 200
+        assert b".view-toolbar-pill" in resp.data
+        assert b".view-toolbar-btn-active" in resp.data

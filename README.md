@@ -16,7 +16,7 @@ auth, wiki, settings UI, design system, i18n) comes from here.
 | `auth` | ✅ `UserStore` (SQLite + roles + bootstrap admin) |
 | `wiki` | ✅ `WikiStore` (tree + locales + uploads) + markdown renderer |
 | `settings` | ✅ `SettingsStore` (two-scope SQLite key/value + JSON helpers) |
-| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js (8a done; pill toolbar, settings shell, auth templates pending as 8b–8d) |
+| `design` | 🟡 chassis `base.html` + Sidebar API + chassis.js + floating pill toolbar (8a+8b done; settings shell + auth templates pending as 8c–8d) |
 | `i18n` | ⏳ Babel wiring + merged catalogs |
 
 See `MONOREPO_PLAN.md` at the repo root for the full extraction plan.
@@ -228,6 +228,58 @@ The `Sidebar.entry()` API supports:
 - `active_when=fn(endpoint, request) -> bool` — custom predicate for
   cases the endpoint set can't express (e.g. "Dashboard tab active
   when the steps page was reached *from* the dashboard").
+
+## Usage — pill toolbar
+
+A floating bottom-center pill used for view/mode switching and
+per-page selectors (report product, time view mode, etc.). The
+blueprint serves both the JS module and the CSS at
+`/design-static/pill-toolbar.{js,css}`. Load them from the app
+template:
+
+```jinja
+{% block app_styles %}
+    <link rel="stylesheet"
+          href="{{ url_for('design.static', filename='pill-toolbar.css') }}">
+{% endblock %}
+
+{% block pre_scripts %}
+    <script src="{{ url_for('design.static', filename='pill-toolbar.js') }}"></script>
+{% endblock %}
+```
+
+Then create a toolbar instance with `PillToolbar.create(opts)`:
+
+```html
+<div class="view-toolbar"><div id="my-pill" class="view-toolbar-pill"></div></div>
+
+<script>
+const tb = PillToolbar.create({
+    mount: '#my-pill',
+    items: [
+        { value: 'table', label: 'Table', icon: '▦' },
+        { value: 'time',  label: 'Time',  icon: '⏱' },
+        { value: 'logic', label: 'Logic', icon: '⇢' },
+    ],
+    value: 'table',
+    onChange: (v) => { /* render... */ },
+    // optional persistence layers — pick one that fits the use case:
+    urlParam:   'product',   // ?product=<v>
+    hashKey:    'mode',      // #mode=<v>  (or bare  #value)
+    storageKey: 'my.view',   // localStorage
+});
+// tb.setValue(v), tb.getValue(), tb.setItems([...]), tb.setVisible(bool), tb.destroy()
+</script>
+```
+
+Initial value resolution order (first match wins): `urlParam` →
+`hashKey` → `storageKey` → `opts.value`. The component listens on
+`hashchange` so external hash rewrites keep the toolbar in sync.
+
+Theming pulls from the chassis CSS variables (`--bg-surface`,
+`--border`, `--text`, `--text-secondary`, `--neon`, `--neon-subtle`),
+so any app that already consumes the design chassis gets the right
+look without extra work.
 
 ## Tests
 

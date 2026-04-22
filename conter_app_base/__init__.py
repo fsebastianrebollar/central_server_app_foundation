@@ -15,8 +15,8 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
 - [x] wiki               — WikiStore (tree + locales + uploads) + markdown renderer
 - [x] settings           — SettingsStore (two-scope SQLite key/value + JSON helpers)
 - [~] design             — chassis base.html + Sidebar API + chassis.js
-                          (8a landed; pill toolbar + settings shell + auth
-                          templates pending as 8b/8c/8d)
+                          + floating pill toolbar (8a+8b landed; settings
+                          shell + auth templates pending as 8c/8d)
 - [ ] i18n               — Babel wiring + merged catalog
 
 Incrementally extracted from conter-stats; each extraction should ship
