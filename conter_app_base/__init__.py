@@ -11,7 +11,7 @@ Current extraction status (see MONOREPO_PLAN.md at the repo root):
 - [x] contract.cli       — argparse helpers for --headless/--prefix/--info/…
 - [x] contract.data_paths — CONTER_DATA_DIR resolver
 - [x] version            — bundled-version-file + pyproject reader + uptime
-- [ ] auth               — users, roles, login/logout routes, templates
+- [x] auth               — UserStore class (SQLite + roles + bootstrap admin)
 - [ ] wiki               — articles, seed hook, markdown rendering
 - [ ] settings           — pluggable sections UI
 - [ ] design             — base.html + sidebar API + style.css + modals
