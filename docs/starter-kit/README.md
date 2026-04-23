@@ -16,6 +16,7 @@ Este directorio NO es código ejecutable — son fragmentos de referencia. El fl
 8. [Testing: conftest + fixtures](07-testing-conftest.md) — `app`, `client`, `admin_session`, monkeypatch DBs.
 9. [Auth con admin bootstrap](08-auth-bootstrap.md) — roles, guest, admin hardcoded inicial.
 10. [Cache in-process pattern](09-cache-pattern.md) — pickle on-disk + RAM LRU + invariantes.
+11. [Contexto para Claude Code](10-claude-context.md) — fragmento listo para el `CLAUDE.md` de la app: qué da el chassis, clases CSS disponibles, trampas conocidas.
 
 ## Filosofía
 
