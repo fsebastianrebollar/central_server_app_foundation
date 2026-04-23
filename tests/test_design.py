@@ -302,3 +302,9 @@ class TestBlueprintStatic:
         assert resp.status_code == 200
         assert b".view-toolbar-pill" in resp.data
         assert b".view-toolbar-btn-active" in resp.data
+
+    def test_chassis_style_css_is_served(self, app_with_design):
+        client = app_with_design.test_client()
+        resp = client.get("/design-static/style.css")
+        assert resp.status_code == 200
+        assert resp.content_type.startswith("text/css")

@@ -154,6 +154,10 @@ def create_auth_blueprint(
 
     @bp.app_context_processor
     def _inject_login_chrome():
+        try:
+            chassis_css = url_for("design.static", filename="style.css")
+        except Exception:
+            chassis_css = None
         return {
             "auth_login_brand_short": login_brand_short,
             "auth_login_brand_full": login_brand_full,
@@ -163,6 +167,7 @@ def create_auth_blueprint(
             "auth_login_favicon_url": _resolve(login_favicon_url),
             "auth_login_allow_guest": allow_guest,
             "auth_protected_user": protected_user,
+            "auth_chassis_css_url": chassis_css,
         }
 
     # --- Login / logout ----------------------------------------------------
