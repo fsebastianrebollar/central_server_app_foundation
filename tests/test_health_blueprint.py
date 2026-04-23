@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 from flask import Flask
 
-from conter_app_base.contract import create_health_blueprint
+from central_server_app_foundation.contract import create_health_blueprint
 
 
 def _make_app(tmp_path: Path, *, icon_exists: bool = True,

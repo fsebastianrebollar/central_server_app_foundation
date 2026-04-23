@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.version`.
+"""Unit tests for `central_server_app_foundation.version`.
 
 App-level tests in conter-stats (`tests/unit/test_version.py`) still
 verify that `app/version.py` produces the right constants and
@@ -13,7 +13,7 @@ import time
 
 import pytest
 
-from conter_app_base import version as libver
+from central_server_app_foundation import version as libver
 
 
 # ---------------------------------------------------------------------------

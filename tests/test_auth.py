@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.auth.UserStore`.
+"""Unit tests for `central_server_app_foundation.auth.UserStore`.
 
 App-level tests in conter-stats (`tests/unit/test_auth_service.py`)
 still verify the public module surface (`authenticate`, `create_user`,
@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from conter_app_base.auth import UserStore, VALID_ROLES, can_publish
+from central_server_app_foundation.auth import UserStore, VALID_ROLES, can_publish
 
 
 # ---------------------------------------------------------------------------

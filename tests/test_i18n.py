@@ -1,4 +1,4 @@
-"""Unit + integration tests for `conter_app_base.i18n`."""
+"""Unit + integration tests for `central_server_app_foundation.i18n`."""
 from __future__ import annotations
 
 import os
@@ -7,7 +7,7 @@ import pytest
 from flask import Flask
 from flask_babel import gettext
 
-from conter_app_base.i18n import (
+from central_server_app_foundation.i18n import (
     DEFAULT_SUPPORTED_LANGUAGES,
     init_babel,
     make_locale_resolver,

@@ -1,4 +1,4 @@
-"""Integration tests for `conter_app_base.auth_ui`.
+"""Integration tests for `central_server_app_foundation.auth_ui`.
 
 Covers the blueprint factory surface: route wiring, redirect targets,
 callback invocation, guest mode toggle, gettext fallback, template
@@ -9,8 +9,8 @@ from __future__ import annotations
 import pytest
 from flask import Flask, session
 
-from conter_app_base.auth import UserStore
-from conter_app_base.auth_ui import create_auth_blueprint
+from central_server_app_foundation.auth import UserStore
+from central_server_app_foundation.auth_ui import create_auth_blueprint
 
 
 # ---------------------------------------------------------------------------
@@ -53,7 +53,7 @@ def app_factory(user_store, tmp_path):
         app.jinja_loader = ChoiceLoader([
             app.jinja_loader,
             DictLoader({
-                "conter_app_base/design/base.html": (
+                "central_server_app_foundation/design/base.html": (
                     "<html><head><title>{% block title %}{% endblock %}"
                     "</title></head><body>{% block content %}{% endblock %}"
                     "{% block scripts %}{% endblock %}</body></html>"

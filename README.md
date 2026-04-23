@@ -1,4 +1,4 @@
-# conter-app-base
+# central-server-app-foundation
 
 Shared chassis for Conter internal apps. Each consumer (conter-stats,
 ini-configurator, …) registers a few factory-built blueprints and
@@ -32,7 +32,7 @@ pip install -e packages/app-base
 ## Usage — health blueprint
 
 ```python
-from conter_app_base.contract import create_health_blueprint
+from central_server_app_foundation.contract import create_health_blueprint
 
 health_bp = create_health_blueprint(
     app_name="my-app",
@@ -61,7 +61,7 @@ Apps that expose an auth gate should list these four names in their
 ## Usage — CLI scaffold
 
 ```python
-from conter_app_base.contract import (
+from central_server_app_foundation.contract import (
     build_parser, handle_preboot_flags, apply_contract_env,
 )
 
@@ -90,7 +90,7 @@ app = create_app()               # safe: env is primed before import
 ## Usage — wiki
 
 ```python
-from conter_app_base.wiki import WikiStore, render_markdown
+from central_server_app_foundation.wiki import WikiStore, render_markdown
 
 _store = WikiStore(
     db_path=lambda: _DB_PATH,            # late binding for tests
@@ -121,7 +121,7 @@ prefix rewrite.
 ## Usage — settings
 
 ```python
-from conter_app_base.settings import SettingsStore
+from central_server_app_foundation.settings import SettingsStore
 
 _store = SettingsStore(db_path=lambda: _DB_PATH)   # late binding for tests
 
@@ -157,7 +157,7 @@ otherwise repeat around every typed getter.
 ## Usage — design chassis
 
 ```python
-from conter_app_base.design import Sidebar, create_design_blueprint
+from central_server_app_foundation.design import Sidebar, create_design_blueprint
 
 sb = Sidebar()
 sb.entry("Dashboard", endpoint="main.dashboard",
@@ -186,7 +186,7 @@ app.register_blueprint(create_design_blueprint(
 Then in the app's `base.html`:
 
 ```jinja
-{% extends "conter_app_base/design/base.html" %}
+{% extends "central_server_app_foundation/design/base.html" %}
 
 {% block header_extra_widgets %}
     {# product picker, workspace widget, etc. #}
@@ -234,7 +234,7 @@ The `Sidebar.entry()` API supports:
 ## Usage — settings shell
 
 ```python
-from conter_app_base.settings_ui import (
+from central_server_app_foundation.settings_ui import (
     SettingsShell, SettingsButton, create_settings_blueprint,
 )
 
@@ -274,7 +274,7 @@ becomes:
 {% block content %}
 <section class="card">
     <h2>{{ _('Settings') }}</h2>
-    {% include "conter_app_base/settings/_sections.html" %}
+    {% include "central_server_app_foundation/settings/_sections.html" %}
 </section>
 {% endblock %}
 ```
@@ -292,8 +292,8 @@ hidden (safer than leaking admin entries on a bug).
 ## Usage — auth blueprint + templates
 
 ```python
-from conter_app_base.auth_ui import create_auth_blueprint
-from conter_app_base.auth import UserStore
+from central_server_app_foundation.auth_ui import create_auth_blueprint
+from central_server_app_foundation.auth import UserStore
 
 _store = UserStore(
     db_path=lambda: _AUTH_DB_PATH,
@@ -349,7 +349,7 @@ deployments) works transparently.
 
 `login.html` is a standalone page owned by the library; apps only
 configure its chrome via the blueprint factory. `user.html` extends
-`conter_app_base/design/base.html` and is drop-in for apps that don't
+`central_server_app_foundation/design/base.html` and is drop-in for apps that don't
 need custom header widgets. Apps that do (product picker, workspace
 widget, etc.) keep their own `user.html` template and `{% include %}`
 the library's body + scripts partials:
@@ -357,10 +357,10 @@ the library's body + scripts partials:
 ```jinja
 {% extends "base.html" %}
 {% block content %}
-{% include "conter_app_base/auth/_user_body.html" %}
+{% include "central_server_app_foundation/auth/_user_body.html" %}
 {% endblock %}
 {% block scripts %}
-{% include "conter_app_base/auth/_user_scripts.html" %}
+{% include "central_server_app_foundation/auth/_user_scripts.html" %}
 {% endblock %}
 ```
 
@@ -424,7 +424,7 @@ look without extra work.
 ## Usage — i18n
 
 ```python
-from conter_app_base.i18n import init_babel, make_locale_resolver
+from central_server_app_foundation.i18n import init_babel, make_locale_resolver
 
 SUPPORTED_LANGS = ("en", "es", "de")
 
@@ -455,12 +455,12 @@ code wrapping error messages with `gettext()` safe in background jobs.
 From `packages/app-base/`:
 
 ```bash
-pybabel extract -F conter_app_base/i18n/babel.cfg \
-    -o conter_app_base/i18n/translations/messages.pot conter_app_base
-pybabel update -i conter_app_base/i18n/translations/messages.pot \
-    -d conter_app_base/i18n/translations
+pybabel extract -F central_server_app_foundation/i18n/babel.cfg \
+    -o central_server_app_foundation/i18n/translations/messages.pot central_server_app_foundation
+pybabel update -i central_server_app_foundation/i18n/translations/messages.pot \
+    -d central_server_app_foundation/i18n/translations
 # edit es/de .po files, then:
-pybabel compile -d conter_app_base/i18n/translations
+pybabel compile -d central_server_app_foundation/i18n/translations
 ```
 
 ## Tests

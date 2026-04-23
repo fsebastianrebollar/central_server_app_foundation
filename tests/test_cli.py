@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.contract.cli`.
+"""Unit tests for `central_server_app_foundation.contract.cli`.
 
 These cover the argparse wiring + env-var propagation in isolation —
 no Flask app, no subprocess — so breakage is attributed to the library,
@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 
 import pytest
 
-from conter_app_base.contract import cli
+from central_server_app_foundation.contract import cli
 
 
 # ---------------------------------------------------------------------------

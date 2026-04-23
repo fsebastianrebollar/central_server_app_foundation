@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.settings.SettingsStore`.
+"""Unit tests for `central_server_app_foundation.settings.SettingsStore`.
 
 App-level tests in conter-stats (`tests/unit/test_settings_service.py`)
 still cover the public module surface (column catalogs, db_config,
@@ -12,7 +12,7 @@ import sqlite3
 
 import pytest
 
-from conter_app_base.settings import SettingsStore
+from central_server_app_foundation.settings import SettingsStore
 
 
 # ---------------------------------------------------------------------------

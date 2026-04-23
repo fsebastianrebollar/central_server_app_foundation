@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "conter-app-base"
+name = "central-server-app-foundation"
 version = "0.1.0"
 description = "Shared chassis for Conter internal apps: supervisor contract, auth, wiki, settings, design system."
 requires-python = ">=3.11"
@@ -18,10 +18,10 @@ test = ["pytest>=8"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["conter_app_base*"]
+include = ["central_server_app_foundation*"]
 
 [tool.setuptools.package-data]
-conter_app_base = [
+central_server_app_foundation = [
     "design/templates/**/*.html",
     "design/static/*.js",
     "design/static/*.css",

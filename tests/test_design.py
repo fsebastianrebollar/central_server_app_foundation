@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.design`.
+"""Unit tests for `central_server_app_foundation.design`.
 
 Covers the Sidebar API (entry construction, role gating, active-state
 resolution) and the blueprint's context processor (what `chassis_*`
@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 from flask import Flask
 
-from conter_app_base.design import (
+from central_server_app_foundation.design import (
     Sidebar,
     SidebarEntry,
     create_design_blueprint,

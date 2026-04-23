@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.settings_ui`.
+"""Unit tests for `central_server_app_foundation.settings_ui`.
 
 Covers the `SettingsShell` registration API (ordering, role gating)
 and the blueprint (injection of `chassis_settings_sections`, role
@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 from flask import Flask, render_template_string
 
-from conter_app_base.settings_ui import (
+from central_server_app_foundation.settings_ui import (
     SettingsButton,
     SettingsSection,
     SettingsShell,
@@ -238,7 +238,7 @@ class TestPartialRendering:
             from flask import session
             session["is_admin"] = True
             html = render_template_string(
-                '{% include "conter_app_base/settings/_sections.html" %}'
+                '{% include "central_server_app_foundation/settings/_sections.html" %}'
             )
         assert 'class="card-section' in html
         assert "card-section-last" in html  # last item gets the marker
@@ -253,7 +253,7 @@ class TestPartialRendering:
         app, _sh = app_with_shell
         with app.test_request_context("/"):
             html = render_template_string(
-                '{% include "conter_app_base/settings/_sections.html" %}'
+                '{% include "central_server_app_foundation/settings/_sections.html" %}'
             )
         assert "Database" not in html
         assert "Public Section" in html
@@ -272,7 +272,7 @@ class TestPartialRendering:
         app.register_blueprint(bp)
         with app.test_request_context("/"):
             html = render_template_string(
-                '{% include "conter_app_base/settings/_sections.html" %}'
+                '{% include "central_server_app_foundation/settings/_sections.html" %}'
             )
         assert '<a class="settings-btn"' in html
         assert 'href="/wiki"' in html

@@ -1,4 +1,4 @@
-"""Unit tests for `conter_app_base.wiki`.
+"""Unit tests for `central_server_app_foundation.wiki`.
 
 App-level tests in conter-stats (`tests/unit/test_wiki_service.py`)
 still cover the public module surface — these tests hit the library
@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from conter_app_base.wiki import (
+from central_server_app_foundation.wiki import (
     ROLE_RANK,
     VALID_MIN_ROLES,
     WikiStore,
