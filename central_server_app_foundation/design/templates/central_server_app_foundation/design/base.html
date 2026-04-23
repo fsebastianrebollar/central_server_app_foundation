@@ -67,6 +67,22 @@
             });
         })();
     </script>
+    <style>
+        @font-face {
+            font-family: "JetBrains Mono";
+            src: url("{{ url_for('design.static', filename='fonts/JetBrainsMono_wght.woff2') }}") format("woff2");
+            font-weight: 100 800;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: "JetBrains Mono";
+            src: url("{{ url_for('design.static', filename='fonts/JetBrainsMono_wght_italic.woff2') }}") format("woff2");
+            font-weight: 100 800;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('design.static', filename='style.css') }}">
     {% block app_styles %}{% endblock %}
     {% block head %}{% endblock %}

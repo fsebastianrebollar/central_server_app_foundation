@@ -308,3 +308,29 @@ class TestBlueprintStatic:
         resp = client.get("/design-static/style.css")
         assert resp.status_code == 200
         assert resp.content_type.startswith("text/css")
+
+    def test_jetbrains_mono_woff2_files_exist(self, app_with_design):
+        client = app_with_design.test_client()
+        for filename in (
+            "fonts/JetBrainsMono_wght.woff2",
+            "fonts/JetBrainsMono_wght_italic.woff2",
+        ):
+            resp = client.get(f"/design-static/{filename}")
+            assert resp.status_code == 200, f"Missing font: {filename}"
+
+    def test_style_css_declares_font_face(self, app_with_design):
+        client = app_with_design.test_client()
+        css = client.get("/design-static/style.css").data.decode()
+        assert "@font-face" not in css, (
+            "@font-face debe estar en base.html (via url_for), no en style.css"
+        )
+
+    def test_style_css_declares_font_mono_variable(self, app_with_design):
+        client = app_with_design.test_client()
+        css = client.get("/design-static/style.css").data.decode()
+        assert "--font-mono" in css
+
+    def test_style_css_body_uses_font_mono_variable(self, app_with_design):
+        client = app_with_design.test_client()
+        css = client.get("/design-static/style.css").data.decode()
+        assert "font-family: var(--font-mono)" in css

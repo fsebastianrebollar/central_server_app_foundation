@@ -15,6 +15,7 @@
 
 /* === Variables & Theming === */
 :root {
+    --font-mono: ui-monospace, "JetBrains Mono", monospace;
     --bg: #f4f3f0;
     --bg-surface: #fdfcfa;
     --bg-header: rgba(253, 252, 250, 0.78);
@@ -113,7 +114,7 @@ html.preload *::after {
 }
 
 body {
-    font-family: "SF Mono", "Fira Code", "Consolas", "JetBrains Mono", monospace;
+    font-family: var(--font-mono);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -689,7 +690,7 @@ td.cell-truncated:hover {
     word-break: break-all;
     white-space: pre-wrap;
     pointer-events: none;
-    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: var(--font-mono);
     line-height: 1.5;
 }
 
@@ -736,7 +737,7 @@ td.cell-truncated:hover {
 .cell-modal-header h4 {
     margin: 0;
     font-size: 13px;
-    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-secondary);
@@ -754,7 +755,7 @@ td.cell-truncated:hover {
     color: var(--text);
     word-break: break-all;
     white-space: pre-wrap;
-    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: var(--font-mono);
     line-height: 1.6;
 }
 
