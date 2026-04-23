@@ -120,7 +120,7 @@ def create_app(*, start_time: float | None = None) -> Flask:
     """
     _st = start_time or _START
 
-    app = Flask(__name__, static_folder="static", template_folder="templates")
+    app = Flask(__name__, template_folder="templates")
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 
     # ── i18n ─────────────────────────────────────────────────────────────────
@@ -165,7 +165,6 @@ def create_app(*, start_time: float | None = None) -> Flask:
         set_user_pref=_set_pref,
         login_brand_short="TA",
         login_brand_full="Template App",
-        login_stylesheet_urls=(("static", "style.css"),),
         protected_user="admin",
     )
     app.register_blueprint(auth_bp)

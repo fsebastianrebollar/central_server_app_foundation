@@ -3,74 +3,72 @@
 {% block title %}Template — Template App{% endblock %}
 
 {% block app_styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{# Page-specific styles only. The chassis style.css is already loaded by base.html. #}
 <style>
-/* ── Template page ─────────────────────────────────────────────────────── */
-
-.page-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border);
-}
-.page-header h1 {
-    font-size: 1.375rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-}
-.page-header p { color: var(--text-muted); font-size: 13px; }
+/* ── Metric grid ─────────────────────────────────────────────────── */
 
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 1rem;
     padding: 1.5rem;
 }
 
 .metric-card {
-    background: var(--surface);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 8px;
     padding: 1.125rem 1.25rem;
+    box-shadow: var(--shadow-card);
 }
+
 .metric-card-label {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .06em;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
+
 .metric-card-value {
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
     color: var(--text);
 }
-.metric-card-value.small {
+
+.metric-card-value.text {
     font-size: 0.9375rem;
     font-weight: 400;
     line-height: 1.5;
 }
 
+/* ── Checklist section ───────────────────────────────────────────── */
+
 .checklist-section {
     margin: 0 1.5rem 1.5rem;
-    background: var(--surface);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 8px;
     overflow: hidden;
+    box-shadow: var(--shadow-card);
 }
+
 .checklist-section-header {
-    padding: 0.875rem 1.25rem;
+    padding: 0.75rem 1.25rem;
     border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: .05em;
+    letter-spacing: .07em;
 }
+
 .checklist-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.875rem;
     padding: 0.75rem 1.25rem;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
@@ -82,34 +80,80 @@
     flex-shrink: 0;
     width: 18px;
     height: 18px;
-    background: var(--success);
-    color: #fff;
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     margin-top: 1px;
 }
 
-.checklist-detail { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
+.checklist-detail {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-top: 2px;
+}
+
 .checklist-detail code {
     font-family: "SFMono-Regular", Consolas, monospace;
     font-size: 11px;
-    background: var(--surface2);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 3px;
-    padding: 1px 4px;
-    color: var(--accent);
+    padding: 1px 5px;
+    color: var(--neon-text);
+}
+
+/* ── Buttons (chassis has no generic .btn — defined here) ────────── */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
+    text-decoration: none;
+    line-height: 1.4;
+}
+.btn:hover { text-decoration: none; }
+
+.btn-primary {
+    background: var(--neon);
+    color: #fff;
+    border-color: var(--neon);
+    box-shadow: 0 0 8px var(--neon-glow);
+}
+.btn-primary:hover {
+    box-shadow: 0 0 14px var(--neon-glow);
+    color: #fff;
+}
+
+.btn-secondary {
+    background: var(--input-bg);
+    color: var(--text);
+    border-color: var(--border);
+}
+.btn-secondary:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Template Page</h1>
-    <p>Example domain page — replace the content below with your app's real UI.</p>
+<div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+    <h1 style="font-size: 1.375rem; font-weight: 700; margin-bottom: 0.25rem;">Template Page</h1>
+    <p style="color: var(--text-secondary); font-size: 13px;">Example domain page — replace this content with your app's real UI.</p>
 </div>
 
 {# ── Metric cards ─────────────────────────────────────────────────────────── #}
@@ -124,18 +168,21 @@
     </div>
     <div class="metric-card">
         <div class="metric-card-label">Current User</div>
-        <div class="metric-card-value small">
+        <div class="metric-card-value text">
             {{ current_user or "guest" }}
-            <span style="color:var(--text-muted);font-size:12px;">
+            <span style="color:var(--text-secondary);font-size:12px;">
                 ({{ session.get("role", "guest") }})
             </span>
         </div>
     </div>
     <div class="metric-card">
-        <div class="metric-card-label">Welcome Message <span style="color:var(--text-muted);font-weight:400;">(SettingsStore)</span></div>
-        <div class="metric-card-value small">{{ welcome_msg }}</div>
+        <div class="metric-card-label">
+            Welcome Message
+            <span style="color:var(--text-secondary);font-weight:400;"> — SettingsStore</span>
+        </div>
+        <div class="metric-card-value text">{{ welcome_msg }}</div>
         {% if is_admin %}
-        <button class="btn btn-secondary" style="margin-top:.75rem;font-size:12px;" onclick="openWelcomeModal()">Edit</button>
+        <button class="btn btn-secondary" style="margin-top:.875rem;" onclick="openWelcomeModal()">Edit</button>
         {% endif %}
     </div>
 </div>
@@ -147,24 +194,42 @@
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
+            <div><strong>Session context processor</strong> — injected by the app, not the chassis</div>
+            <div class="checklist-detail">
+                Exposes <code>current_user</code>, <code>is_admin</code>, <code>is_guest</code>,
+                <code>current_lang</code>, <code>user_theme</code> que necesita <code>base.html</code>.
+            </div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
             <div><strong>i18n</strong> — <code>init_babel()</code> + <code>make_locale_resolver()</code></div>
-            <div class="checklist-detail">Languages: en / es / de. Resolver: session → cookie → Accept-Language.</div>
+            <div class="checklist-detail">
+                Idiomas: en / es / de. Resolución: session → cookie → Accept-Language.
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>UserStore</strong> — SQLite auth with roles</div>
-            <div class="checklist-detail">Bootstrap admin: <code>admin / changeme</code>. Roles: operator &lt; supervisor &lt; admin.</div>
+            <div><strong>UserStore</strong> — SQLite auth con roles</div>
+            <div class="checklist-detail">
+                Bootstrap admin: <code>admin / changeme</code>. Roles: operator &lt; supervisor &lt; admin.
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>create_auth_blueprint()</strong> — 16 routes</div>
-            <div class="checklist-detail"><code>/login</code>, <code>/logout</code>, <code>/user</code>, <code>/api/theme</code>, <code>/lang/&lt;lang&gt;</code>, admin CRUD…</div>
+            <div><strong>create_auth_blueprint()</strong> — 16 rutas</div>
+            <div class="checklist-detail">
+                <code>/login</code>, <code>/logout</code>, <code>/user</code>,
+                <code>/api/theme</code>, <code>/lang/&lt;lang&gt;</code>, admin CRUD…
+            </div>
         </div>
     </div>
 
@@ -172,66 +237,70 @@
         <span class="check-badge">✓</span>
         <div>
             <div><strong>create_design_blueprint()</strong> — sidebar + chassis template</div>
-            <div class="checklist-detail">Extends <code>central_server_app_foundation/design/base.html</code>. Theme toggle, language switcher, sidebar collapse.</div>
+            <div class="checklist-detail">
+                Extiende <code>central_server_app_foundation/design/base.html</code>.
+                <code>style.css</code> cargado automáticamente por el chassis.
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>Session context processor</strong> — required by the app</div>
-            <div class="checklist-detail">Injects <code>current_user</code>, <code>is_admin</code>, <code>is_guest</code>, <code>current_lang</code>, <code>user_theme</code> for <code>base.html</code>.</div>
+            <div><strong>SettingsStore</strong> — SQLite key/value de dos ámbitos</div>
+            <div class="checklist-detail">
+                Global + por usuario. WAL mode. Schema idempotente.
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>SettingsStore</strong> — two-scope SQLite key/value</div>
-            <div class="checklist-detail">Global settings + per-user preferences in one DB. WAL mode. Schema idempotent.</div>
+            <div><strong>create_settings_blueprint()</strong> — registro de secciones</div>
+            <div class="checklist-detail">
+                <a href="/user">User profile</a> → ver panel de settings (como admin).
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>create_settings_blueprint()</strong> — settings section registry</div>
-            <div class="checklist-detail">Open <a href="/user">User profile</a> to see the settings panel (visit as admin).</div>
+            <div><strong>create_health_blueprint()</strong> — contrato supervisor v1.3</div>
+            <div class="checklist-detail">
+                <code>GET /health</code>, <code>GET /version</code>,
+                <code>GET /icon</code>, <code>POST /shutdown</code>.
+            </div>
         </div>
     </div>
 
     <div class="checklist-item">
         <span class="check-badge">✓</span>
         <div>
-            <div><strong>create_health_blueprint()</strong> — supervisor contract v1.3</div>
-            <div class="checklist-detail"><code>GET /health</code>, <code>GET /version</code>, <code>GET /icon</code>, <code>POST /shutdown</code>.</div>
-        </div>
-    </div>
-
-    <div class="checklist-item">
-        <span class="check-badge">✓</span>
-        <div>
-            <div><strong>build_parser()</strong> — contract CLI flags</div>
-            <div class="checklist-detail"><code>--headless --host --port --log-level --data-dir --shutdown-token --prefix --info --version</code></div>
+            <div><strong>build_parser()</strong> — flags CLI del contrato</div>
+            <div class="checklist-detail">
+                <code>--headless --host --port --log-level --data-dir --shutdown-token --prefix --info --version</code>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block modals_extra %}
-{# Welcome message modal — only useful for admins, but always rendered #}
+{# Welcome message modal. Usa las clases de modal del chassis: .modal-overlay + .modal-open, .modal-box #}
 <div class="modal-overlay" id="welcome-modal">
-    <div class="modal">
+    <div class="modal-box">
         <div class="modal-header">
             <h3>Edit Welcome Message</h3>
             <button class="modal-close" onclick="closeWelcomeModal()">&#10005;</button>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label" for="welcome-input">Message</label>
-                <textarea class="form-textarea" id="welcome-input" rows="3">{{ welcome_msg }}</textarea>
+            <div style="margin-bottom:.75rem;">
+                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.375rem;">Message</label>
+                <textarea class="setup-input" id="welcome-input" rows="3">{{ welcome_msg }}</textarea>
             </div>
-            <p id="welcome-error" style="color:var(--danger);font-size:12px;margin-top:.5rem;display:none;"></p>
+            <p id="welcome-error" style="color:var(--error-text);font-size:12px;display:none;"></p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeWelcomeModal()">Cancel</button>
@@ -244,12 +313,12 @@
 {% block scripts %}
 <script>
 function openWelcomeModal() {
-    document.getElementById("welcome-modal").classList.add("open");
+    document.getElementById("welcome-modal").classList.add("modal-open");
     document.getElementById("welcome-input").focus();
 }
 
 function closeWelcomeModal() {
-    document.getElementById("welcome-modal").classList.remove("open");
+    document.getElementById("welcome-modal").classList.remove("modal-open");
     document.getElementById("welcome-error").style.display = "none";
 }
 
@@ -268,9 +337,8 @@ function saveWelcome() {
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-        if (data.ok) {
-            location.reload();
-        } else {
+        if (data.ok) { location.reload(); }
+        else {
             errEl.textContent = data.error || "Error saving.";
             errEl.style.display = "block";
         }
@@ -281,7 +349,6 @@ function saveWelcome() {
     });
 }
 
-// Close modal on backdrop click
 document.getElementById("welcome-modal").addEventListener("click", function(e) {
     if (e.target === this) closeWelcomeModal();
 });
