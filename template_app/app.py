@@ -165,6 +165,9 @@ def create_app(*, start_time: float | None = None) -> Flask:
         set_user_pref=_set_pref,
         login_brand_short="TA",
         login_brand_full="Template App",
+        # login.html es un template standalone (no extiende base.html) —
+        # hay que pasarle el CSS del chassis explícitamente.
+        login_stylesheet_urls=(("design.static", "style.css"),),
         protected_user="admin",
     )
     app.register_blueprint(auth_bp)
