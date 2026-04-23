@@ -1,10 +1,546 @@
 /*
  * central_server_app_foundation — chassis design system
  *
- * Phase 0: file established. Extracted CSS (variables, reset, layout,
- * shared components) will be added in Phases 1–3.
+ * Sections extracted from conter-stats Phase 1:
+ *   - CSS variables & theming (light + dark tokens, shadow layer)
+ *   - Reset & base
+ *   - Header (.app-header, lang dropdown, theme toggle, hamburger)
+ *   - Layout (.app-layout)
+ *   - Sidebar (+ backdrop)
+ *   - Main content wrapper
  *
- * Apps extend with their own stylesheet loaded in the `app_styles` block
- * of base.html. Tokens defined here become the baseline; apps override
- * only what differs.
+ * Apps extend with their own stylesheet in the `app_styles` block.
+ * Responsive rules for chassis components: see Phase 3.
  */
+
+/* === Variables & Theming === */
+:root {
+    --bg: #f4f3f0;
+    --bg-surface: #fdfcfa;
+    --bg-header: rgba(253, 252, 250, 0.78);
+    --header-text: #2c2c30;
+    --text: #2c2c30;
+    --text-secondary: #85858d;
+    --border: #e6e4e1;
+    --border-hover: #c8c5c1;
+    --input-bg: #f7f6f3;
+    --neon: #ff6a00;
+    --neon-glow: rgba(255, 106, 0, 0.18);
+    --neon-subtle: rgba(255, 106, 0, 0.07);
+    --neon-text: #c85500;
+    --neon-blue: #0090e0;
+    --neon-blue-glow: rgba(0, 144, 224, 0.18);
+    --success-bg: #eaf6ee;
+    --success-text: #1a6b4a;
+    --success-border: #bfe8cd;
+    --error-bg: #fdf1f1;
+    --error-text: #9e2a2a;
+    --error-border: #f5d0d0;
+    --sidebar-width: 200px;
+    --sidebar-collapsed: 60px;
+    --overlay-bg: rgba(0, 0, 0, 0.32);
+    --modal-shadow: rgba(0, 0, 0, 0.12);
+    --table-header-bg: var(--input-bg);
+    --table-row-alt: rgba(0, 0, 0, 0.015);
+    --table-hover: rgba(0, 0, 0, 0.025);
+}
+
+[data-theme="dark"] {
+    --bg: #0a0a0f;
+    --bg-surface: #141419;
+    --bg-header: rgba(10, 10, 15, 0.82);
+    --header-text: #e4e4e7;
+    --text: #e4e4e7;
+    --text-secondary: #8a8a94;
+    --border: #2e2e34;
+    --border-hover: #46464d;
+    --input-bg: #1a1a20;
+    --table-header-bg: #1f1f26;
+    --table-row-alt: rgba(255, 255, 255, 0.018);
+    --table-hover: rgba(255, 255, 255, 0.035);
+    --neon: #ff6a00;
+    --neon-glow: rgba(255, 106, 0, 0.4);
+    --neon-subtle: rgba(255, 106, 0, 0.08);
+    --neon-text: #ff6a00;
+    --neon-blue: #00c8ff;
+    --neon-blue-glow: rgba(0, 200, 255, 0.35);
+    --success-bg: #052e16;
+    --success-text: #86efac;
+    --success-border: #14532d;
+    --error-bg: #450a0a;
+    --error-text: #fca5a5;
+    --error-border: #7f1d1d;
+    --overlay-bg: rgba(0, 0, 0, 0.55);
+    --modal-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* === Light mode shadow & glow softening ===
+   All values below apply only in light mode (:root defaults).
+   Dark mode overrides them via [data-theme="dark"] where needed.
+   Goal: reduce visual weight of shadows, glows, and overlays
+   for a relaxed, low-fatigue reading experience. */
+
+:root {
+    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.03);
+    --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.07);
+    --shadow-popup: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.10);
+}
+[data-theme="dark"] {
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.45);
+    --shadow-popup: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* === Reset & Base === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Kill transitions during the first paint. Added inline by base.html's
+   head script, removed after `load`. Prevents the sidebar/drawer from
+   animating from a stale state when the page first renders. */
+html.preload,
+html.preload *,
+html.preload *::before,
+html.preload *::after {
+    transition: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+}
+
+body {
+    font-family: "SF Mono", "Fira Code", "Consolas", "JetBrains Mono", monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* === Header === */
+.app-header {
+    background: var(--bg-header);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+}
+
+.app-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    margin-right: auto;
+}
+
+.app-header-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+    color: #000;
+    box-shadow: 0 0 10px var(--neon-glow);
+    flex-shrink: 0;
+}
+
+.app-header-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--header-text);
+}
+
+.app-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-header-user {
+    font-size: 13px;
+    color: var(--header-text);
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.btn-logout {
+    font-size: 14px;
+    color: var(--header-text);
+    opacity: 0.5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    font-family: inherit;
+}
+
+.btn-logout:hover {
+    opacity: 1;
+    color: var(--error-text);
+}
+
+.lang-dropdown {
+    position: relative;
+}
+
+.btn-lang {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-family: inherit;
+    padding: 0;
+    transition: all 0.2s;
+}
+
+.btn-lang:hover {
+    color: var(--neon);
+    border-color: var(--neon);
+    box-shadow: 0 0 8px var(--neon-subtle);
+}
+
+.lang-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 200;
+    min-width: 60px;
+}
+
+.lang-dropdown-menu.open {
+    display: flex;
+    flex-direction: column;
+}
+
+.lang-option {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.lang-option:hover {
+    background: var(--neon-subtle);
+    color: var(--neon-text);
+}
+
+.lang-option-active {
+    color: var(--neon);
+}
+
+.theme-toggle {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+    border-color: var(--neon);
+    color: var(--neon-text);
+    box-shadow: 0 0 8px var(--neon-subtle);
+}
+
+/* Hamburger button — hidden on desktop */
+.app-header-hamburger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+.app-header-hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+.app-header-hamburger:hover {
+    border-color: var(--neon);
+    box-shadow: 0 0 8px var(--neon-subtle);
+}
+
+
+/* === Layout: Sidebar + Main === */
+.app-layout {
+    display: flex;
+    height: calc(100vh - 52px);
+    overflow: hidden;
+}
+
+/* === Sidebar === */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.2s;
+    overflow: hidden;
+}
+
+[data-sidebar="collapsed"] .sidebar {
+    width: var(--sidebar-collapsed);
+}
+
+[data-sidebar="collapsed"] .sidebar-label {
+    display: none;
+}
+
+[data-sidebar="collapsed"] .sidebar-nav {
+    align-items: center;
+    padding: 12px 0;
+}
+
+[data-sidebar="collapsed"] .sidebar-link {
+    justify-content: center;
+    padding: 10px 0;
+    width: 44px;
+    border-radius: 8px;
+}
+
+[data-sidebar="collapsed"] .sidebar-bottom {
+    align-items: center;
+    padding: 8px 0;
+}
+
+[data-sidebar="collapsed"] .sidebar-collapse-btn {
+    width: 44px;
+}
+
+[data-sidebar="collapsed"] .sidebar-user {
+    justify-content: center;
+    padding: 10px 0;
+    width: 44px;
+}
+
+[data-sidebar="collapsed"] .sidebar-collapse-icon {
+    transform: rotate(180deg);
+}
+
+[data-sidebar="collapsed"] .admin-badge-sm,
+[data-sidebar="collapsed"] .guest-badge-sm {
+    display: none;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.sidebar-link:hover {
+    background: var(--neon-subtle);
+    color: var(--text);
+}
+
+.sidebar-link-active {
+    background: var(--neon-subtle);
+    color: var(--neon-text);
+}
+
+.sidebar-icon {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sidebar-label {
+    transition: opacity 0.2s;
+}
+
+.sidebar-bottom {
+    padding: 8px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 0;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.15s;
+}
+
+.sidebar-collapse-btn:hover {
+    background: var(--neon-subtle);
+    color: var(--text);
+}
+
+.sidebar-collapse-icon {
+    font-size: 14px;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sidebar-user:hover {
+    background: var(--neon-subtle);
+}
+
+.sidebar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    flex-shrink: 0;
+}
+
+.admin-badge-sm {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--neon);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.guest-badge-sm {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Sidebar backdrop — hidden on desktop */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 52px 0 0 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+/* === Main Content === */
+main {
+    flex: 1;
+    margin: 0;
+    padding: 24px 24px 72px;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
