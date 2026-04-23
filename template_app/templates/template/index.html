@@ -6,42 +6,48 @@
 <style>
 /*
  * Page-specific styles only.
- * The chassis style.css (loaded by base.html) provides: .card, .card-section,
- * .badge-ok, .section-label, .modal-*, .login-btn, .btn-back, .text-secondary,
- * .setup-input, .modal-label, .modal-input, .modal-error and all layout/theme vars.
+ * The chassis style.css provides: .card, .card h2 (with // orange prefix),
+ * .card-title-row, .card-section, .badge-ok, .section-label, .modal-*,
+ * .login-btn, .btn-back, .text-secondary, .setup-input and all layout/theme vars.
  */
 
-/* Metric grid — chassis .card provides background, border, padding */
+/* Metric strip inside a card — no individual card borders, just a grid of values */
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 16px;
 }
 
-.metric-card {
-    padding: 18px 20px; /* tighter than .card default (24px) */
+.metric-cell {
+    background: var(--bg-surface);
+    padding: 16px 20px;
 }
 
 .metric-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .07em;
     color: var(--text-secondary);
-    margin-bottom: .5rem;
+    margin-bottom: .4rem;
 }
 
 .metric-value {
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
+    color: var(--text);
 }
 
 .metric-value-sm {
-    font-size: .9375rem;
+    font-size: .875rem;
     font-weight: 400;
     line-height: 1.5;
+    color: var(--text);
 }
 
 /* Checklist row inside .card-section */
@@ -57,7 +63,6 @@
     margin-top: 3px;
 }
 
-/* Inline code chips (chassis body is already monospace; this adds the bg) */
 .checklist-detail code {
     background: var(--input-bg);
     border: 1px solid var(--border);
@@ -71,47 +76,44 @@
 
 {% block content %}
 
-{# Page title #}
-<div style="margin-bottom:1.5rem;">
-    <h1 style="font-size:1.375rem;font-weight:700;margin-bottom:.25rem;">Template Page</h1>
-    <p class="text-secondary">Example domain page — replace this content with your app's real UI.</p>
-</div>
-
-{# ── Metric cards (chassis .card + minimal grid override) ──────────────────── #}
-<div class="metric-grid">
-    <div class="card metric-card">
-        <div class="metric-label">Example Metric A</div>
-        <div class="metric-value">42</div>
-    </div>
-
-    <div class="card metric-card">
-        <div class="metric-label">Example Metric B</div>
-        <div class="metric-value">7</div>
-    </div>
-
-    <div class="card metric-card">
-        <div class="metric-label">Current User</div>
-        <div class="metric-value metric-value-sm">
-            {{ current_user or "guest" }}
-            <span class="text-secondary">({{ session.get("role", "guest") }})</span>
-        </div>
-    </div>
-
-    <div class="card metric-card">
-        <div class="metric-label">
-            Welcome Message
-            <span style="font-weight:400;text-transform:none;letter-spacing:0;"> — SettingsStore</span>
-        </div>
-        <div class="metric-value metric-value-sm">{{ welcome_msg }}</div>
+{# ── Overview card — title uses chassis .card h2 → gets // orange prefix ──── #}
+<div class="card" style="margin-bottom:1.5rem;">
+    <div class="card-title-row">
+        <h2>Overview</h2>
         {% if is_admin %}
-        <button class="btn-back" style="margin-top:.875rem;" onclick="openWelcomeModal()">Edit</button>
+        <button class="btn-back" onclick="openWelcomeModal()">Edit welcome</button>
         {% endif %}
     </div>
+
+    <div class="metric-grid">
+        <div class="metric-cell">
+            <div class="metric-label">Example Metric A</div>
+            <div class="metric-value">42</div>
+        </div>
+
+        <div class="metric-cell">
+            <div class="metric-label">Example Metric B</div>
+            <div class="metric-value">7</div>
+        </div>
+
+        <div class="metric-cell">
+            <div class="metric-label">Current User</div>
+            <div class="metric-value metric-value-sm">
+                {{ current_user or "guest" }}
+                <span class="text-secondary">({{ session.get("role", "guest") }})</span>
+            </div>
+        </div>
+
+        <div class="metric-cell">
+            <div class="metric-label">Welcome Message</div>
+            <div class="metric-value metric-value-sm">{{ welcome_msg }}</div>
+        </div>
+    </div>
 </div>
 
-{# ── Integration checklist (chassis .card + .card-section + .badge-ok) ──────── #}
+{# ── Integration checklist — same pattern: .card with <h2> title ──────────── #}
 <div class="card">
-    <p class="section-label" style="margin-bottom:.75rem;">chassis integration checklist</p>
+    <h2>Chassis Integration</h2>
 
     <div class="card-section">
         <div class="checklist-row">
@@ -144,7 +146,7 @@
             <div>
                 <div><strong>UserStore</strong> — SQLite auth con roles</div>
                 <div class="checklist-detail">
-                    Bootstrap admin: <code>admin / changeme</code>. Roles: operator &lt; supervisor &lt; admin.
+                    Roles: operator &lt; supervisor &lt; admin. Bootstrap admin configurable.
                 </div>
             </div>
         </div>
@@ -170,7 +172,7 @@
                 <div><strong>create_design_blueprint()</strong> — sidebar + chassis template</div>
                 <div class="checklist-detail">
                     Extiende <code>central_server_app_foundation/design/base.html</code>.
-                    <code>style.css</code> cargado automáticamente.
+                    <code>style.css</code> y JetBrains Mono cargados automáticamente.
                 </div>
             </div>
         </div>

@@ -578,6 +578,17 @@ main {
     letter-spacing: -1px;
 }
 
+/* Flex row: card title + optional action buttons side by side */
+.card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+.card-title-row h2 {
+    margin-bottom: 0;
+}
+
 /* === Table === */
 .table-wrap {
     overflow-x: auto;
