@@ -9,12 +9,12 @@
     - role-filtered sidebar from `chassis_sidebar`
     - flash toast + auto-wired cell-value modal
     - chassis.js runtime (theme + sidebar toggles + ESC handler)
+    - style.css design tokens (loaded before app_styles so apps can override)
 
   App-specific widgets (product filter, workspace picker, etc.) live
   in the `header_extra_widgets` block. App-specific JS inside `<body>`
-  bottom lives in `scripts`. App-specific styles are loaded via
-  `app_styles` — the chassis deliberately does NOT inject style.css
-  itself so apps stay in charge of their CSS pipeline.
+  bottom lives in `scripts`. App-specific styles extend the chassis via
+  the `app_styles` block — defined after style.css so app rules win.
 -#}
 <html lang="{{ current_lang|default('en') }}">
 <head>
@@ -67,6 +67,7 @@
             });
         })();
     </script>
+    <link rel="stylesheet" href="{{ url_for('design.static', filename='style.css') }}">
     {% block app_styles %}{% endblock %}
     {% block head %}{% endblock %}
 </head>
