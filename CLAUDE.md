@@ -333,6 +333,13 @@ The `base.html` automatically loads `chassis.js` (theme + sidebar + ESC) and
 `hide_for_guests=True` hides tab for guest sessions.
 `active_when=callable` lets the sidebar highlight from outside the tab's own blueprint.
 
+**Sidebar active state — use the page endpoint, not a redirect.** The chassis marks a
+tab active when `request.endpoint` matches the entry's `endpoint` (or `active_endpoints`).
+If the entry points to a redirect route (e.g. `app.index` → `redirect(url_for("app.page"))`),
+the tab will never highlight because the browser lands on `app.page`, not `app.index`.
+Always set `endpoint` to the route that actually renders the page. A path-based fallback
+exists in the blueprint as a safety net, but correct configuration is the right fix.
+
 ---
 
 ### `design` — Pill toolbar component (JS)
