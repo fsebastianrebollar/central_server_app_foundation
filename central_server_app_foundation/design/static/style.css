@@ -1384,3 +1384,224 @@ select option {
     margin-top: 0;
 }
 
+
+/* =====================================================================
+ * Phase 3: chassis responsive rules
+ * ==================================================================== */
+
+/* Tablet ≤1024px: sidebar auto-collapse + card + cell-modal */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: var(--sidebar-collapsed);
+    }
+    [data-sidebar="expanded"] .sidebar {
+        width: var(--sidebar-width);
+    }
+    .card {
+        padding: 14px 12px;
+    }
+    .cell-modal {
+        max-width: 92vw;
+    }
+}
+
+/* Mobile ≤640px: header/sidebar off-canvas, layout, card, table, modals */
+@media (max-width: 640px) {
+    :root {
+        --sidebar-width: 240px;
+    }
+
+    /* Header */
+    .app-header {
+        padding: 0 12px;
+        gap: 8px;
+    }
+    .app-header-hamburger {
+        display: flex;
+    }
+    .app-header-title {
+        font-size: 12px;
+        letter-spacing: 0.8px;
+    }
+    .app-header-user {
+        display: none;
+    }
+    /* Logout "x" lives in the sidebar user menu on mobile, not in header */
+    .app-header .btn-logout,
+    .app-header form.inline-form {
+        display: none;
+    }
+    .app-header-controls {
+        gap: 6px;
+    }
+
+    /* Sidebar as off-canvas drawer */
+    .app-layout {
+        position: relative;
+    }
+    .sidebar {
+        position: fixed;
+        top: 52px;
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-width);
+        z-index: 95;
+        transform: translateX(-100%);
+        transition: transform 0.22s ease, width 0s;
+        box-shadow: var(--shadow-popup);
+    }
+    [data-sidebar="expanded"] .sidebar {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+    }
+    [data-sidebar="collapsed"] .sidebar {
+        transform: translateX(-100%);
+    }
+    /* Labels always visible inside drawer */
+    [data-sidebar="collapsed"] .sidebar-label,
+    [data-sidebar="expanded"] .sidebar-label {
+        display: inline;
+    }
+    .sidebar-link {
+        padding: 12px 14px;
+    }
+    .sidebar-collapse-btn {
+        display: none;
+    }
+    .sidebar-backdrop {
+        display: block;
+    }
+    [data-sidebar="expanded"] .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    main {
+        width: 100%;
+        min-width: 0;
+        padding: 8px 10px 72px;
+    }
+
+    /* Card */
+    .card {
+        padding: 14px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        margin: 0;
+        background: var(--bg-surface);
+    }
+    .card h2 {
+        font-size: 15px;
+    }
+
+    .table-wrap {
+        margin: 0;
+        border-radius: 0;
+    }
+    .table-wrap table {
+        font-size: 12px;
+    }
+    .table-wrap th,
+    .table-wrap td {
+        padding: 8px 10px;
+    }
+
+    /* Modals */
+    .modal-box {
+        max-width: 96vw;
+    }
+    .cell-modal {
+        max-width: 96vw;
+        width: 96vw;
+        max-height: 88vh;
+    }
+    .modal-body {
+        padding: 14px 12px;
+    }
+    .modal-header,
+    .modal-footer {
+        padding: 12px 14px;
+    }
+    .cell-tooltip {
+        max-width: 90vw;
+    }
+
+    /* Touch targets */
+    .theme-toggle,
+    .btn-logout,
+    .modal-close {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    /* Login */
+    .login-card {
+        margin: 16px;
+        padding: 24px 20px;
+    }
+
+    /* Flash messages container */
+    .flash-container {
+        padding: 0 10px;
+    }
+}
+
+/* Safe-area insets for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+    .app-header {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+    }
+    .sidebar {
+        padding-left: env(safe-area-inset-left);
+    }
+    @media (min-width: 641px) {
+        main {
+            padding-left: max(24px, env(safe-area-inset-left));
+            padding-right: max(24px, env(safe-area-inset-right));
+        }
+    }
+    @media (max-width: 640px) {
+        main {
+            padding-left: max(10px, env(safe-area-inset-left));
+            padding-right: max(10px, env(safe-area-inset-right));
+        }
+    }
+}
+
+/* Prevent body scroll when sidebar drawer is open */
+@media (max-width: 640px) {
+    html[data-sidebar="expanded"] body {
+        overflow: hidden;
+    }
+    /* Don't use body overflow-x: hidden — it breaks nested horizontal
+       scroll on iOS. .app-layout already clips the layout. */
+    html, body {
+        -webkit-text-size-adjust: 100%;
+    }
+    /* Enable inertial scrolling on chassis containers */
+    .table-wrap,
+    .modal-body,
+    .sidebar-nav {
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x pan-y;
+    }
+    /* Ensure the table inside can actually grow past the viewport */
+    .table-wrap table {
+        width: max-content;
+        min-width: 100%;
+    }
+}
+
+/* Tablet 901–1024px: card tighten */
+@media (min-width: 901px) and (max-width: 1024px) {
+    .card {
+        padding: 16px 14px;
+    }
+}
+
+/* Tablet narrow 641–900px: card tighten */
+@media (min-width: 641px) and (max-width: 900px) {
+    .card {
+        padding: 14px 12px;
+    }
+}
