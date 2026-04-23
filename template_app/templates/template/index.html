@@ -1,0 +1,289 @@
+{% extends "central_server_app_foundation/design/base.html" %}
+
+{% block title %}Template — Template App{% endblock %}
+
+{% block app_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+/* ── Template page ─────────────────────────────────────────────────────── */
+
+.page-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+.page-header p { color: var(--text-muted); font-size: 13px; }
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.125rem 1.25rem;
+}
+.metric-card-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+.metric-card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+}
+.metric-card-value.small {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.checklist-section {
+    margin: 0 1.5rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.checklist-section-header {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.checklist-item:last-child { border-bottom: none; }
+
+.check-badge {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    background: var(--success);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 1px;
+}
+
+.checklist-detail { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
+.checklist-detail code {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 4px;
+    color: var(--accent);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Template Page</h1>
+    <p>Example domain page — replace the content below with your app's real UI.</p>
+</div>
+
+{# ── Metric cards ─────────────────────────────────────────────────────────── #}
+<div class="metric-grid">
+    <div class="metric-card">
+        <div class="metric-card-label">Example Metric A</div>
+        <div class="metric-card-value">42</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-card-label">Example Metric B</div>
+        <div class="metric-card-value">7</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-card-label">Current User</div>
+        <div class="metric-card-value small">
+            {{ current_user or "guest" }}
+            <span style="color:var(--text-muted);font-size:12px;">
+                ({{ session.get("role", "guest") }})
+            </span>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-card-label">Welcome Message <span style="color:var(--text-muted);font-weight:400;">(SettingsStore)</span></div>
+        <div class="metric-card-value small">{{ welcome_msg }}</div>
+        {% if is_admin %}
+        <button class="btn btn-secondary" style="margin-top:.75rem;font-size:12px;" onclick="openWelcomeModal()">Edit</button>
+        {% endif %}
+    </div>
+</div>
+
+{# ── Integration checklist ────────────────────────────────────────────────── #}
+<div class="checklist-section">
+    <div class="checklist-section-header">chassis integration checklist</div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>i18n</strong> — <code>init_babel()</code> + <code>make_locale_resolver()</code></div>
+            <div class="checklist-detail">Languages: en / es / de. Resolver: session → cookie → Accept-Language.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>UserStore</strong> — SQLite auth with roles</div>
+            <div class="checklist-detail">Bootstrap admin: <code>admin / changeme</code>. Roles: operator &lt; supervisor &lt; admin.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>create_auth_blueprint()</strong> — 16 routes</div>
+            <div class="checklist-detail"><code>/login</code>, <code>/logout</code>, <code>/user</code>, <code>/api/theme</code>, <code>/lang/&lt;lang&gt;</code>, admin CRUD…</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>create_design_blueprint()</strong> — sidebar + chassis template</div>
+            <div class="checklist-detail">Extends <code>central_server_app_foundation/design/base.html</code>. Theme toggle, language switcher, sidebar collapse.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>Session context processor</strong> — required by the app</div>
+            <div class="checklist-detail">Injects <code>current_user</code>, <code>is_admin</code>, <code>is_guest</code>, <code>current_lang</code>, <code>user_theme</code> for <code>base.html</code>.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>SettingsStore</strong> — two-scope SQLite key/value</div>
+            <div class="checklist-detail">Global settings + per-user preferences in one DB. WAL mode. Schema idempotent.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>create_settings_blueprint()</strong> — settings section registry</div>
+            <div class="checklist-detail">Open <a href="/user">User profile</a> to see the settings panel (visit as admin).</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>create_health_blueprint()</strong> — supervisor contract v1.3</div>
+            <div class="checklist-detail"><code>GET /health</code>, <code>GET /version</code>, <code>GET /icon</code>, <code>POST /shutdown</code>.</div>
+        </div>
+    </div>
+
+    <div class="checklist-item">
+        <span class="check-badge">✓</span>
+        <div>
+            <div><strong>build_parser()</strong> — contract CLI flags</div>
+            <div class="checklist-detail"><code>--headless --host --port --log-level --data-dir --shutdown-token --prefix --info --version</code></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals_extra %}
+{# Welcome message modal — only useful for admins, but always rendered #}
+<div class="modal-overlay" id="welcome-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Edit Welcome Message</h3>
+            <button class="modal-close" onclick="closeWelcomeModal()">&#10005;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label" for="welcome-input">Message</label>
+                <textarea class="form-textarea" id="welcome-input" rows="3">{{ welcome_msg }}</textarea>
+            </div>
+            <p id="welcome-error" style="color:var(--danger);font-size:12px;margin-top:.5rem;display:none;"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeWelcomeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveWelcome()">Save</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openWelcomeModal() {
+    document.getElementById("welcome-modal").classList.add("open");
+    document.getElementById("welcome-input").focus();
+}
+
+function closeWelcomeModal() {
+    document.getElementById("welcome-modal").classList.remove("open");
+    document.getElementById("welcome-error").style.display = "none";
+}
+
+function saveWelcome() {
+    var msg = document.getElementById("welcome-input").value.trim();
+    var errEl = document.getElementById("welcome-error");
+    if (!msg) {
+        errEl.textContent = "Message cannot be empty.";
+        errEl.style.display = "block";
+        return;
+    }
+    fetch("/api/template/welcome", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg}),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.ok) {
+            location.reload();
+        } else {
+            errEl.textContent = data.error || "Error saving.";
+            errEl.style.display = "block";
+        }
+    })
+    .catch(function() {
+        errEl.textContent = "Network error.";
+        errEl.style.display = "block";
+    });
+}
+
+// Close modal on backdrop click
+document.getElementById("welcome-modal").addEventListener("click", function(e) {
+    if (e.target === this) closeWelcomeModal();
+});
+</script>
+{% endblock %}
