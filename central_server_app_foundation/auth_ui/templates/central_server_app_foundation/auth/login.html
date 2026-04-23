@@ -13,6 +13,9 @@
     {% if auth_login_favicon_url %}
     <link rel="icon" href="{{ auth_login_favicon_url }}" type="image/x-icon">
     {% endif %}
+    {% if auth_chassis_css_url %}
+    <link rel="stylesheet" href="{{ auth_chassis_css_url }}">
+    {% endif %}
     {% for href in auth_login_stylesheet_urls %}
     <link rel="stylesheet" href="{{ href }}">
     {% endfor %}

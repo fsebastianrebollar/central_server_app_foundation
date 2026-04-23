@@ -267,7 +267,7 @@ auth_bp = create_auth_blueprint(
     on_login_hook=_on_login,              # (user_dict, session) → None, called after login
     login_brand_short="CS",
     login_brand_full="Conter Stats",
-    login_stylesheet_urls=(("static", "css/style.css"),),   # str or (endpoint, filename) tuple
+    login_stylesheet_urls=(("static", "css/app.css"),),    # OPTIONAL: only for extra app CSS
     login_favicon_url=("static", "img/favicon.ico"),
     user_template="user.html",            # app can override (must include partials)
     protected_user="conter",              # username that cannot be deleted/role-changed
@@ -282,6 +282,13 @@ calls work unchanged).
 `base.html`. Apps that want custom chrome keep their own `user.html` and
 `{% include "central_server_app_foundation/auth/_user_body.html" %}` +
 `{% include "central_server_app_foundation/auth/_user_scripts.html" %}`.
+
+**`login.html` CSS auto-wiring**: `login.html` is a standalone template (does NOT
+extend `base.html`) so it must load its own CSS. Since v0.1.1, the auth blueprint
+auto-detects the design blueprint and injects `auth_chassis_css_url` into the template
+context — `login.html` loads chassis `style.css` automatically whenever the design
+blueprint is registered. Apps do NOT need to pass `login_stylesheet_urls` for the
+chassis CSS; that parameter is only needed for **additional** app-specific stylesheets.
 
 `login_stylesheet_urls` and `login_favicon_url` accept either plain strings or
 `(endpoint, filename)` tuples that resolve via `url_for` at request time — required

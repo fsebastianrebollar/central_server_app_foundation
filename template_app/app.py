@@ -63,8 +63,8 @@ def _data_dir() -> Path:
 
 _user_store = UserStore(
     db_path=lambda: str(_data_dir() / "auth.db"),
-    admin_user="admin",
-    admin_pass="changeme",
+    admin_user=os.environ.get("TEMPLATE_ADMIN_USER", "admin"),
+    admin_pass=os.environ.get("TEMPLATE_ADMIN_PASS", "changeme"),
 )
 
 _settings_store = SettingsStore(
@@ -165,9 +165,6 @@ def create_app(*, start_time: float | None = None) -> Flask:
         set_user_pref=_set_pref,
         login_brand_short="TA",
         login_brand_full="Template App",
-        # login.html es un template standalone (no extiende base.html) —
-        # hay que pasarle el CSS del chassis explícitamente.
-        login_stylesheet_urls=(("design.static", "style.css"),),
         protected_user="admin",
     )
     app.register_blueprint(auth_bp)
