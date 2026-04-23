@@ -42,3 +42,88 @@
 .settings-btn-icon {
     font-size: 18px;
 }
+
+/* === Form rows inside modals (user profile, settings modals) === */
+.db-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.db-form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.db-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+/* === Status / feedback strip === */
+.db-status {
+    margin-top: 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    min-height: 0;
+}
+
+.db-status:not(:empty) {
+    padding: 6px 10px;
+}
+
+.db-status-ok {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
+
+.db-status-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+}
+
+/* === Radio card grid (role picker, cache size picker) === */
+.cache-size-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cache-size-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.cache-size-option:has(input:checked) {
+    border-color: var(--neon);
+    background: var(--neon-subtle);
+}
+
+.cache-size-option:hover {
+    border-color: var(--border-hover);
+}
+
+.cache-size-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cache-size-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+}

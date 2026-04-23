@@ -87,8 +87,8 @@ def _db_probe() -> str:
 # Icons are rendered with |safe so HTML entities work directly.
 
 _sidebar = Sidebar()
-_sidebar.entry("Template", endpoint="template.index", icon="&#9673;")
-_sidebar.entry("Settings", endpoint="auth.user_profile", icon="&#9881;", admin_only=True)
+_sidebar.entry("Template", endpoint="template.template_page", icon="&#9673;")
+_sidebar.entry("Settings", endpoint="template.settings", icon="&#9881;", admin_only=True)
 
 # ── Settings UI shell ─────────────────────────────────────────────────────────
 
@@ -97,14 +97,21 @@ _settings_shell.section(
     "appearance",
     title="Appearance",
     description="Theme and language preferences are saved automatically when you switch them.",
-    buttons=[SettingsButton(label="User profile", href="/user")],
+    buttons=[SettingsButton(label="User profile", icon="&#9881;", href="/user")],
     admin_only=False,
 )
 _settings_shell.section(
     "welcome",
     title="Welcome Message",
     description="The message shown at the top of the Template page.",
-    buttons=[SettingsButton(label="Edit", onclick="openWelcomeModal()")],
+    buttons=[SettingsButton(label="Edit", icon="&#9998;", onclick="openWelcomeModal()")],
+    admin_only=True,
+)
+_settings_shell.section(
+    "example",
+    title="Example Configuration",
+    description="Placeholder section. Replace this with your own domain-specific settings and modal.",
+    buttons=[SettingsButton(label="Configure", icon="&#9881;", onclick="openExampleModal()")],
     admin_only=True,
 )
 

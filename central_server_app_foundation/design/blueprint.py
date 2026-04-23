@@ -88,12 +88,19 @@ def create_design_blueprint(
                 url = url_for(e.endpoint)
             except Exception:
                 continue
+            is_active = e.is_active(endpoint=endpoint, request=request)
+            if not is_active and request is not None:
+                # Path-based fallback: catches redirect-endpoint mismatches
+                # (e.g. sidebar entry points to a "/" redirect but the actual
+                # page has a different endpoint name).
+                try:
+                    is_active = request.path == url
+                except Exception:
+                    pass
             rendered.append({
                 "entry": e,
                 "url": url,
-                "is_active": e.is_active(
-                    endpoint=endpoint, request=request
-                ),
+                "is_active": is_active,
             })
 
         try:

@@ -34,6 +34,14 @@ def create_template_blueprint(*, settings_store: SettingsStore) -> Blueprint:
         welcome_msg = settings_store.get_global(_WELCOME_KEY, default=_WELCOME_DEFAULT)
         return render_template("template/index.html", welcome_msg=welcome_msg)
 
+    @bp.route("/settings")
+    def settings():
+        if not session.get("user_id"):
+            return redirect(url_for("auth.login"))
+
+        welcome_msg = settings_store.get_global(_WELCOME_KEY, default=_WELCOME_DEFAULT)
+        return render_template("template/settings.html", welcome_msg=welcome_msg)
+
     @bp.route("/api/template/welcome", methods=["POST"])
     def save_welcome():
         """Save the welcome message. Admin-only JSON endpoint."""

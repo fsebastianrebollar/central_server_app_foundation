@@ -1161,6 +1161,11 @@ select option {
     max-width: 200px;
 }
 
+.btn-danger {
+    background: var(--error-text) !important;
+    color: #fff !important;
+}
+
 .login-guest-link {
     display: block;
     text-align: center;
@@ -1258,6 +1263,37 @@ select option {
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.admin-badge-operator,
+.admin-badge-supervisor,
+.admin-badge-admin {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+
+.admin-badge-operator {
+    background: var(--input-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.admin-badge-supervisor {
+    background: var(--neon-subtle);
+    color: var(--neon-text);
+    border: 1px solid var(--neon);
+}
+
+.admin-badge-admin {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-text);
 }
 
 .admin-user-actions {
