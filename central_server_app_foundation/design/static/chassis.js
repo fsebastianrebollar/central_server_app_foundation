@@ -75,6 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (MOBILE_MQ.matches) setSidebar('collapsed', false);
 
+    // === Language dropdown ===
+    const langBtn = document.getElementById('btn-lang');
+    const langMenu = document.getElementById('lang-dropdown-menu');
+    if (langBtn && langMenu) {
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langMenu.classList.toggle('open');
+        });
+        document.addEventListener('click', () => langMenu.classList.remove('open'));
+    }
+
     // ESC closes the mobile drawer and any open modal overlays.
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
