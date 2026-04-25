@@ -22,7 +22,7 @@ from central_server_app_foundation.contract import (
     create_health_blueprint,
     override_path,
 )
-from central_server_app_foundation.design import Sidebar, create_design_blueprint
+from central_server_app_foundation.design import ChassisIcons, Sidebar, create_design_blueprint
 from central_server_app_foundation.i18n import init_babel, make_locale_resolver
 from central_server_app_foundation.settings import SettingsStore
 from central_server_app_foundation.settings_ui import (
@@ -87,8 +87,8 @@ def _db_probe() -> str:
 # Icons are rendered with |safe so HTML entities work directly.
 
 _sidebar = Sidebar()
-_sidebar.entry("Template", endpoint="template.template_page", icon="&#9673;")
-_sidebar.entry("Settings", endpoint="template.settings", icon="&#9881;", admin_only=True)
+_sidebar.entry("Template", endpoint="template.template_page", icon=ChassisIcons.DASHBOARD)
+_sidebar.entry("Settings", endpoint="template.settings", icon=ChassisIcons.SETTINGS, admin_only=True)
 
 # ── Settings UI shell ─────────────────────────────────────────────────────────
 

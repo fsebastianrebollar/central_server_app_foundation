@@ -35,9 +35,11 @@ example):
     #   {% block content %} ... {% endblock %}
 """
 from central_server_app_foundation.design.blueprint import create_design_blueprint
+from central_server_app_foundation.design.icons import ChassisIcons
 from central_server_app_foundation.design.sidebar import Sidebar, SidebarEntry
 
 __all__ = [
+    "ChassisIcons",
     "Sidebar",
     "SidebarEntry",
     "create_design_blueprint",
